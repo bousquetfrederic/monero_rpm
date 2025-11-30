@@ -14,10 +14,10 @@ Requires(preun): systemd
 Requires(postun): systemd
 
 %description
-This source package provides the official prebuilt linux x86_64 binaries from the Monero project.
+This package provides the official prebuilt binaries from the Monero project.
 It produces two subpackages: monerod (the node daemon) and monero-wallet (wallet tools).
 
-# --- subpackage monerod ---
+# --- monerod subpackage ---
 %package -n monerod
 Summary: Monero full node daemon
 Requires(pre): shadow-utils
@@ -26,10 +26,13 @@ Requires(preun): systemd
 Requires(postun): systemd
 
 %description -n monerod
-The official monerod daemon, with a systemd unit, configuration directory, firewalld service definition, logrotate policy, and correct ownership of its data, log, and runtime directories via systemd-tmpfiles.
-Note: the `monero` system user is created at install time and intentionally left behind when uninstalling, to avoid accidental data loss.
+The official monerod daemon, with a systemd unit, configuration directory,
+firewalld service definition, logrotate policy, and correct ownership of its
+data, log, and runtime directories via systemd-tmpfiles.
+Note: the "monero" system user is created at install time and intentionally
+left behind when uninstalling, to avoid accidental data loss.
 
-# --- subpackage monero-wallet ---
+# --- monero-wallet subpackage ---
 %package -n monero-wallet
 Summary: Monero wallet CLI and RPC tools
 
@@ -76,7 +79,7 @@ EOF
 # Config directory only (no default file)
 mkdir -p %{buildroot}%{_sysconfdir}/monero
 
-# Firewalld service definition (optional)
+# Firewalld service definition
 mkdir -p %{buildroot}%{_prefix}/lib/firewalld/services
 cat > %{buildroot}%{_prefix}/lib/firewalld/services/monerod.xml <<'EOF'
 <?xml version="1.0" encoding="utf-8"?>
@@ -105,10 +108,9 @@ cat > %{buildroot}%{_sysconfdir}/logrotate.d/monerod <<'EOF'
 }
 EOF
 
-# systemd-tmpfiles rules to create persistent dirs with correct ownership/permissions
+# systemd-tmpfiles rules
 mkdir -p %{buildroot}%{_tmpfilesdir}
 cat > %{buildroot}%{_tmpfilesdir}/monerod.conf <<'EOF'
-# Create data and log directories for monerod
 d /var/lib/monero 0750 monero monero -
 d /var/log/monero 0750 monero monero -
 EOF
@@ -169,5 +171,5 @@ getent passwd monero >/dev/null || \
 %{_bindir}/monero-gen-*
 
 %changelog
-* Fri Nov 28 2025 Frederic <frederic@bousquet.eu> - 0.18.4.4-1
-- Initial version thanks to MS Copilot
+* Sun Nov 30 2025 Frederic <frederic@bousquet.eu> - 0.18.4.4-1
+- Package official Monero binaries into two subpackages: monerod and monero-wallet
