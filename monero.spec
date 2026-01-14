@@ -1,5 +1,5 @@
 Name:           monero
-Version:        0.18.4.4
+Version:        0.18.4.5
 Release:        1%{?dist}
 Summary:        Monero cryptocurrency tools (prebuilt binaries)
 
